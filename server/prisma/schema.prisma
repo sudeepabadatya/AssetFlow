@@ -4,11 +4,38 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-   url      = env("postgresql://postgres:Sudeepa%402904@localhost:5432/assetflow")
+   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ASSET_MANAGER
+  DEPARTMENT_HEAD
+  EMPLOYEE
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id            String @id @default(uuid())
+  fullName      String
+  email         String @unique
+  password      String
+
+  role          Role @default(EMPLOYEE)
+  status        UserStatus @default(ACTIVE)
+
+  refreshToken  String?
+ resetPasswordToken String?
+  resetPasswordExpiry DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
